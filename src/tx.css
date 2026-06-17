@@ -1,0 +1,341 @@
+/* ── PFM palette ────────────────────────────────────────────────────── */
+:root {
+  --bg: #f7f9fc;
+  --bg-secondary: #eef3fb;
+  --panel: #ffffff;
+  --text: #172b4d;
+  --text-muted: #5e6c84;
+  --border: #d7e0ec;
+  --accent: #0a5bd3;
+  --accent-light: #deebff;
+  --shadow: 0 10px 30px rgba(9, 30, 66, 0.08);
+}
+
+/* ── Page shell ─────────────────────────────────────────────────────── */
+.tile-page-shell {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────── */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 20px;
+  background: linear-gradient(90deg, #ffffff 15%, #0a4bb7 100%);
+  color: #fff;
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #fff;
+}
+
+.header-nav {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.header-nav-item {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+}
+
+.header-nav-item:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ── Content area ───────────────────────────────────────────────────── */
+.tile-page-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 12px 16px 16px;
+  min-height: 0;
+}
+
+/* ── Toolbar ────────────────────────────────────────────────────────── */
+.tile-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.tile-toolbar-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.tile-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── SVG icons ──────────────────────────────────────────────────────── */
+.icon {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  vertical-align: middle;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── Action buttons (used inside AG Grid cell renderer) ─────────────── */
+.action-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--accent);
+  padding: 3px 6px;
+  line-height: 1;
+  transition: background 0.12s;
+}
+
+.action-btn:hover {
+  background: var(--accent-light);
+}
+
+/* ── Form fields (shared with modal style) ─────────────────────────── */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-field span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.form-field input,
+.form-field select {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--panel);
+  outline: none;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(10, 91, 211, 0.18);
+}
+
+.modal-error {
+  color: #c0392b;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+/* ── Buttons ────────────────────────────────────────────────────────── */
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s, background 0.15s;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.btn-secondary {
+  background: var(--panel);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--bg-secondary);
+}
+
+.btn-danger {
+  background: #c0392b;
+  color: #fff;
+}
+
+.btn-danger:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+/* ── Modal / dialog ─────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 30, 66, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.modal {
+  background: var(--panel);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 440px;
+  padding: 22px 24px;
+}
+
+.modal--narrow {
+  max-width: 380px;
+}
+
+.modal-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.modal-message {
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+/* ── Transfer entry fieldset ────────────────────────────────────────── */
+.tx-fieldset {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px 18px;
+  margin-bottom: 12px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+}
+
+.tx-legend {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  padding: 0 8px;
+}
+
+/* Responsive multi-column grid of form fields. */
+.tx-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.tx-form-comment {
+  grid-column: span 2;
+}
+
+.tx-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+/* ── Draft / staged grid ────────────────────────────────────────────── */
+.tx-grid-wrapper {
+  flex: 1;
+  min-height: 300px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  background: var(--panel);
+}
+
+.tx-grid-wrapper .ag-root-wrapper {
+  height: 100%;
+}
+
+/* Invalid (empty or duplicate) device cells. */
+.tx-cell-invalid {
+  background: #fdecea !important;
+  color: #c0392b !important;
+}
+
+/* ── Toolbar staged-count + banners ─────────────────────────────────── */
+.tx-draft-count {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-right: 4px;
+}
+
+.tx-banner {
+  font-size: 13px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.tx-banner--ok {
+  background: #e6f4ea;
+  color: #1e7e34;
+  border: 1px solid #b7dfc2;
+}
+
+.tx-banner--err {
+  background: #fdecea;
+  color: #c0392b;
+  border: 1px solid #f5c6cb;
+}

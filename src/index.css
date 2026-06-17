@@ -1,0 +1,38 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+body {
+  font-family: 'Segoe UI', 'Trebuchet MS', system-ui, sans-serif;
+  font-size: 14px;
+  color: #172b4d;
+  background:
+    radial-gradient(circle at top left, rgba(10, 91, 211, 0.08), transparent 26%),
+    linear-gradient(180deg, #f9fbff 0%, #f4f7fb 100%);
+}
+
+a {
+  color: #0a5bd3;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button, input, select {
+  font: inherit;
+  cursor: pointer;
+}
