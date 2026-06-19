@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import type { TransferRowInput } from '../types/Transfer';
 
-// Mirrors the legacy "Transfer" fieldset: shared attributes entered once, then
-// Insert spawns N draft rows (one per device) into the grid below. Device names
-// are left blank for the operator to fill in per row.
+// Mirrors functionality of previous version. Insert spawns 
+// N draft rows (one per device) into the grid below. Device 
+// names are left blank for the operator to fill in per row.
+
 type FormState = {
   numberOfDevices: string;
   date: string;
@@ -69,6 +70,18 @@ export default function TransferEntryForm({ onInsert }: Props) {
     }
     if (!form.bpId.trim()) {
       setError('BP ID is required.');
+      return;
+    }
+    if (form.bpRow.trim() !== '' && !Number.isFinite(Number(form.bpRow))) {
+      setError('BP Row must be a valid number.');
+      return;
+    }
+    if (form.bpColumn.trim() !== '' && !Number.isFinite(Number(form.bpColumn))) {
+      setError('BP Column must be a valid number.');
+      return;
+    }
+    if (form.coupon.trim() !== '' && !Number.isFinite(Number(form.coupon))) {
+      setError('Coupon must be a valid number.');
       return;
     }
 

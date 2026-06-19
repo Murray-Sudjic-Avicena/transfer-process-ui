@@ -12,9 +12,9 @@ import type { TransferRowInput } from '../types/Transfer';
 import '../tx.css';
 
 let keyCounter = 0;
-const nextKey = () => `draft-${keyCounter++}`;
+const nextKey = () => `draft-${keyCounter++}`; //function creates a temporary key used only in the frontend, to distinguish rows before they are submitted
 
-function normalizeDevice(device: string | null | undefined): string {
+function normaliseDevice(device: string | null | undefined): string {
   return (device ?? '').toUpperCase().replace(/\s/g, '');
 }
 
@@ -35,7 +35,7 @@ export default function TransferPage() {
   const handleCellChanged = useCallback(
     (key: string, field: keyof TransferRowInput, value: unknown) => {
       setRows((prev) =>
-        prev.map((r) => (r._key === key ? { ...r, [field]: value } : r)),
+        prev.map((r) => (r._key === key ? { ...r, [field]: value } : r)), //goes through every row, checks if that one was edited. If yes, overwrite the one field that was changed, if no, leave unchanged
       );
       // Editing a device clears its stale duplicate flag.
       if (field === 'device') setDuplicateDevices(new Set());
@@ -68,7 +68,7 @@ export default function TransferPage() {
     const seen = new Set<string>();
     const localDups = new Set<string>();
     for (const r of rows) {
-      const n = normalizeDevice(r.device);
+      const n = normaliseDevice(r.device);
       if (seen.has(n)) localDups.add(n);
       seen.add(n);
     }
@@ -91,7 +91,7 @@ export default function TransferPage() {
       setBanner({ kind: 'ok', text: `Inserted ${result.inserted} transfer${result.inserted === 1 ? '' : 's'}.` });
     } catch (err) {
       if (err instanceof DuplicateDevicesError) {
-        setDuplicateDevices(new Set(err.duplicates.map(normalizeDevice)));
+        setDuplicateDevices(new Set(err.duplicates.map(normaliseDevice)));
         setBanner({
           kind: 'err',
           text: `Backend rejected duplicates (nothing inserted): ${err.duplicates.join(', ')}`,

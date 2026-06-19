@@ -46,7 +46,7 @@ interface Props {
   onDeleteRow: (key: string) => void;
 }
 
-function normalizeDevice(device: string | null | undefined): string {
+function normaliseDevice(device: string | null | undefined): string {
   return (device ?? '').toUpperCase().replace(/\s/g, '');
 }
 
@@ -67,7 +67,7 @@ export default function TransferDraftGrid({
       // Flag empty or duplicate device cells so the operator can see what to fix.
       cellClassRules: {
         'tx-cell-invalid': (p) =>
-          !p.value || duplicateDevices.has(normalizeDevice(p.value as string)),
+          !p.value || duplicateDevices.has(normaliseDevice(p.value as string)),
       },
     },
     { field: 'date', headerName: 'Date', flex: 1, editable: true },

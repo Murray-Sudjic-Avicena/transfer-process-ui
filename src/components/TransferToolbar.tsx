@@ -27,7 +27,7 @@ export default function TransferToolbar({ draftCount, submitting, onSubmit, onCl
         >
           {submitting ? 'Submitting…' : 'Submit Transfer'}
         </button>
-      </div>
+      </div> 
     </div>
   );
 }

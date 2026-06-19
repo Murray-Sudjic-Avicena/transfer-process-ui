@@ -4,10 +4,10 @@ export default function Header() {
   return (
     <header className="app-header">
       <div className="header-logo">
-        <img src="/avicena.png" alt="Avicena" height={28} />
+        <img src="\assets\images\avicena.png" alt="Avicena" height={28} />
       </div>
 
-      {/* // Navigation dummy buttons */}
+      {/* // Navigation buttons placeholders */}
       <nav className="header-nav">
         {navItems.map(item => (
           <button key={item} className="header-nav-item">
@@ -16,7 +16,7 @@ export default function Header() {
           </button>
         ))}
 
-        {/* // User Icon, dummy button */}
+        {/* // User Icon, placeholder */}
         <button className="header-nav-item header-nav-item--user">
           <svg className="icon" viewBox="0 0 24 24" aria-hidden>
             <circle cx="12" cy="8" r="4" />
