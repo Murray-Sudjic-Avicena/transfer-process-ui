@@ -12,7 +12,7 @@ interface Props {
 export default function ConfirmDialog({
   title,
   message,
-  confirmLabel = 'Confirm',
+  confirmLabel = 'Confirm', // default value. 
   busy = false,
   onConfirm,
   onCancel,

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import Header from '../components/Header';
 import TransferToolbar from '../components/TransferToolbar';
 import TransferEntryForm from '../components/TransferEntryForm';
@@ -19,14 +19,26 @@ function normaliseDevice(device: string | null | undefined): string {
 }
 
 export default function TransferPage() {
-  // The staged grid rows live here; the grid edits them in place.
+  // state variables
   const [rows, setRows] = useState<DraftRow[]>([]);
-  const [duplicateDevices, setDuplicateDevices] = useState<Set<string>>(new Set());
   const [submitting, setSubmitting] = useState(false);
   const [banner, setBanner] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
   const [clearConfirm, setClearConfirm] = useState(false);
 
-  // Form Insert: append N freshly-built draft rows.
+  // Device names that appear more than once in the grid right now. Recomputes on every change to rows
+  const duplicateDevices = useMemo(() => {
+    const seen = new Set<string>();
+    const dups = new Set<string>();
+    for (const r of rows) {
+      const n = normaliseDevice(r.device);
+      if (!n) continue; // empty cells don't count as duplicates
+      if (seen.has(n)) dups.add(n);
+      seen.add(n);
+    }
+    return dups;
+  }, [rows]);
+
+  // appends n draft rows.
   const handleInsert = useCallback((newRows: TransferRowInput[]) => {
     setRows((prev) => [...prev, ...newRows.map((r) => ({ ...r, _key: nextKey() }))]);
     setBanner(null);
@@ -34,22 +46,20 @@ export default function TransferPage() {
 
   const handleCellChanged = useCallback(
     (key: string, field: keyof TransferRowInput, value: unknown) => {
+      // updates the rows. Note that duplicateDevices recomputes itself from rows.
       setRows((prev) =>
-        prev.map((r) => (r._key === key ? { ...r, [field]: value } : r)), //goes through every row, checks if that one was edited. If yes, overwrite the one field that was changed, if no, leave unchanged
+        prev.map((r) => (r._key === key ? { ...r, [field]: value } : r)),
       );
-      // Editing a device clears its stale duplicate flag.
-      if (field === 'device') setDuplicateDevices(new Set());
     },
     [],
   );
 
   const handleDeleteRow = useCallback((key: string) => {
     setRows((prev) => prev.filter((r) => r._key !== key));
-  }, []);
+  }, [setRows]);
 
   const handleClear = () => {
     setRows([]);
-    setDuplicateDevices(new Set());
     setBanner(null);
     setClearConfirm(false);
   };
@@ -57,41 +67,31 @@ export default function TransferPage() {
   const handleSubmit = async () => {
     setBanner(null);
 
-    // Client-side guard: every row needs a device name.
+    // Every row needs a device name.
     const missing = rows.some((r) => !r.device || !r.device.trim());
     if (missing) {
       setBanner({ kind: 'err', text: 'Every row needs a device name before submitting.' });
       return;
     }
 
-    // Client-side duplicate check mirrors the backend so the user gets instant feedback.
-    const seen = new Set<string>();
-    const localDups = new Set<string>();
-    for (const r of rows) {
-      const n = normaliseDevice(r.device);
-      if (seen.has(n)) localDups.add(n);
-      seen.add(n);
-    }
-    if (localDups.size > 0) {
-      setDuplicateDevices(localDups);
-      setBanner({ kind: 'err', text: `Duplicate device names in the grid: ${[...localDups].join(', ')}` });
+    if (duplicateDevices.size > 0) {
+      setBanner({ kind: 'err', text: `Duplicate device names in the grid: ${[...duplicateDevices].join(', ')}` });
       return;
     }
 
     setSubmitting(true);
     try {
-      // Strip the client-only _key before sending.
+      // Strip the client-only '_key' before sending.
       const payload: TransferRowInput[] = rows.map(({ _key, ...rest }) => {
         void _key;
         return rest;
       });
       const result = await createTransferGrid(payload);
       setRows([]);
-      setDuplicateDevices(new Set());
       setBanner({ kind: 'ok', text: `Inserted ${result.inserted} transfer${result.inserted === 1 ? '' : 's'}.` });
     } catch (err) {
       if (err instanceof DuplicateDevicesError) {
-        setDuplicateDevices(new Set(err.duplicates.map(normaliseDevice)));
+        // DB clashes can't be detected from the grid alone - need to lookup. The banner names them.
         setBanner({
           kind: 'err',
           text: `Backend rejected duplicates (nothing inserted): ${err.duplicates.join(', ')}`,

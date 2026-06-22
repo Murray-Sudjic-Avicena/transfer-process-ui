@@ -114,12 +114,7 @@ export default function TransferEntryForm({ onInsert }: Props) {
       <div className="tx-form-grid">
         <label className="form-field">
           <span># Devices *</span>
-          <input
-            type="number"
-            min={1}
-            value={form.numberOfDevices}
-            onChange={(e) => set('numberOfDevices', e.target.value)}
-          />
+          <input type="number" min={1} value={form.numberOfDevices} onChange={(e) => set('numberOfDevices', e.target.value)} />
         </label>
         <label className="form-field">
           <span>Date *</span>
