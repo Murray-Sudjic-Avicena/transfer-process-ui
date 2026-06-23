@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { TransferRowInput } from '../types/Transfer';
+import { numericCellError } from '../validation/transferValidation';
 
 // Mirrors functionality of previous version. Insert spawns 
 // N draft rows (one per device) into the grid below. Device 
@@ -54,7 +55,7 @@ export default function TransferEntryForm({ onInsert }: Props) {
 
   const handleInsert = () => {
     setError(null);
-
+    // Form type checks. These conform with the same rules as the grid validation.
     const count = Number(form.numberOfDevices);
     if (!Number.isInteger(count) || count < 1) {
       setError('Number of devices must be a whole number ≥ 1.');
@@ -72,17 +73,18 @@ export default function TransferEntryForm({ onInsert }: Props) {
       setError('BP ID is required.');
       return;
     }
-    if (form.bpRow.trim() !== '' && !Number.isFinite(Number(form.bpRow))) {
-      setError('BP Row must be a valid number.');
-      return;
-    }
-    if (form.bpColumn.trim() !== '' && !Number.isFinite(Number(form.bpColumn))) {
-      setError('BP Column must be a valid number.');
-      return;
-    }
-    if (form.coupon.trim() !== '' && !Number.isFinite(Number(form.coupon))) {
-      setError('Coupon must be a valid number.');
-      return;
+    // Numeric fields use the same domain rules as the grid (integer, in range),
+    // so a value the form accepts is guaranteed to pass the grid's check.
+    for (const [field, raw] of [
+      ['bpRow', form.bpRow],
+      ['bpColumn', form.bpColumn],
+      ['coupon', form.coupon],
+    ] as const) {
+      const err = numericCellError(field, numOrNull(raw));
+      if (err) {
+        setError(err);
+        return;
+      }
     }
 
     // Shared values applied to every spawned row; device is filled in per row.

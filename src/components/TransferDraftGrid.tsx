@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import type { TransferRowInput } from '../types/Transfer';
+import { normaliseDevice, numericCellError } from '../validation/transferValidation';
 
 // Each draft row gets a stable client-side key so edits/deletes target the right
 // row regardless of order. The key never leaves the client.
@@ -46,10 +47,6 @@ const ACTION_COL_FLEX = 0.5;
 const TOTAL_FLEX =
   COLUMNS.reduce((sum, c) => sum + c.flex, 0) + ACTION_COL_FLEX;
 
-function normaliseDevice(device: string | null | undefined): string {
-  return (device ?? '').toUpperCase().replace(/\s/g, '');
-}
-
 export default function TransferDraftGrid({
   rows,
   duplicateDevices,
@@ -88,15 +85,22 @@ export default function TransferDraftGrid({
             <tr key={row._key}>
               {COLUMNS.map((c) => {
                 const value = row[c.field];
-                // Flag empty or duplicate device cells so the operator can see what to fix.
+                // Flag cells the operator needs to fix: empty/duplicate device,
+                // or a numeric value that's out of range / not a whole number.
                 const invalid =
-                  c.field === 'device' &&
-                  (!value || duplicateDevices.has(normaliseDevice(value as string)));
+                  c.field === 'device'
+                    ? !value || duplicateDevices.has(normaliseDevice(value as string))
+                    : numericCellError(c.field, value) != null;
+                const title =
+                  c.field === 'device'
+                    ? undefined
+                    : numericCellError(c.field, value) ?? undefined;
                 return (
                   <td key={c.field}>
                     <input
                       className={`tx-grid-input${invalid ? ' tx-cell-invalid' : ''}`}
                       type={c.numeric ? 'number' : 'text'}
+                      title={title}
                       value={value == null ? '' : String(value)}
                       onChange={(e) => handleChange(row._key, c, e.target.value)}
                     />

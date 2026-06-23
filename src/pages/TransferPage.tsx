@@ -9,14 +9,11 @@ import {
   DuplicateDevicesError,
 } from '../api/transfersApi';
 import type { TransferRowInput } from '../types/Transfer';
+import { findDuplicateDevices, validateDraftRows } from '../validation/transferValidation';
 import '../tx.css';
 
 let keyCounter = 0;
 const nextKey = () => `draft-${keyCounter++}`; //function creates a temporary key used only in the frontend, to distinguish rows before they are submitted
-
-function normaliseDevice(device: string | null | undefined): string {
-  return (device ?? '').toUpperCase().replace(/\s/g, '');
-}
 
 export default function TransferPage() {
   // state variables
@@ -26,17 +23,7 @@ export default function TransferPage() {
   const [clearConfirm, setClearConfirm] = useState(false);
 
   // Device names that appear more than once in the grid right now. Recomputes on every change to rows
-  const duplicateDevices = useMemo(() => {
-    const seen = new Set<string>();
-    const dups = new Set<string>();
-    for (const r of rows) {
-      const n = normaliseDevice(r.device);
-      if (!n) continue; // empty cells don't count as duplicates
-      if (seen.has(n)) dups.add(n);
-      seen.add(n);
-    }
-    return dups;
-  }, [rows]);
+  const duplicateDevices = useMemo(() => findDuplicateDevices(rows), [rows]);
 
   // appends n draft rows.
   const handleInsert = useCallback((newRows: TransferRowInput[]) => {
@@ -67,15 +54,9 @@ export default function TransferPage() {
   const handleSubmit = async () => {
     setBanner(null);
 
-    // Every row needs a device name.
-    const missing = rows.some((r) => !r.device || !r.device.trim());
-    if (missing) {
-      setBanner({ kind: 'err', text: 'Every row needs a device name before submitting.' });
-      return;
-    }
-
-    if (duplicateDevices.size > 0) {
-      setBanner({ kind: 'err', text: `Duplicate device names in the grid: ${[...duplicateDevices].join(', ')}` });
+    const validation = validateDraftRows(rows);
+    if (!validation.ok) {
+      setBanner({ kind: 'err', text: validation.error! });
       return;
     }
 
