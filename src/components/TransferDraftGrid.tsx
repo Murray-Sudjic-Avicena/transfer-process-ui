@@ -15,7 +15,7 @@ interface Props {
   onDeleteRow: (key: string) => void;
 }
 
-// Column config drives both the header row and each body cell. `flex` is a
+// Column interface describes both the header row and each body cell. `flex` is a
 // relative width weight (same meaning as the old grid), `numeric` switches the
 // input to a number field and parses the value back to a number.
 interface Column {
@@ -32,9 +32,9 @@ const COLUMNS: Column[] = [
   { field: 'bpRow', header: 'BP Row', flex: 0.8, numeric: true },
   { field: 'bpColumn', header: 'BP Col', flex: 0.8, numeric: true },
   { field: 'waferId', header: 'Wafer ID', flex: 1 },
-  { field: 'coupon', header: 'Coupon', flex: 0.8, numeric: true },
+  { field: 'coupon', header: 'Coupon', flex: 0.9, numeric: true },
   { field: 'variation', header: 'Variation', flex: 1 },
-  { field: 'arrayAddress', header: 'Array Addr', flex: 1 },
+  { field: 'arrayAddress', header: 'Array Address', flex: 1.4 },
   { field: 'operator', header: 'Operator', flex: 1 },
   { field: 'comment', header: 'Comment', flex: 1.4 },
   { field: 'cracked', header: 'Cracked', flex: 0.8, numeric: true },
@@ -103,6 +103,7 @@ export default function TransferDraftGrid({
                   </td>
                 );
               })}
+              {/* 'Bin' icon/button */}
               <td className="tx-grid-action-col">
                 <button
                   className="action-btn"

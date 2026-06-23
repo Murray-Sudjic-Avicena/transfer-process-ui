@@ -1,4 +1,4 @@
-// Bridge to backend. Submits the transfer grid for insertion.
+// bridge to backend. Loose ends. Must be hooked up to backend API
 
 import type { Transfer, TransferRowInput } from '../types/Transfer';
 

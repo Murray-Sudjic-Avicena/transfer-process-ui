@@ -24,7 +24,10 @@ export default function ConfirmDialog({
   }, [onCancel]);
 
   return (
-    <div className="modal-overlay" onMouseDown={onCancel}>
+    // We use onMouseDown as it fires the moment the mouse is clicked. If we used onClick, 
+    // this releases after you release the click, so if a user clicks in the box and releases 
+    // outside, it will quit unexpectedly.
+    <div className="modal-overlay" onMouseDown={onCancel}> 
       <div className="modal modal--narrow" onMouseDown={(e) => e.stopPropagation()}>
         <h3 className="modal-title">{title}</h3>
         <p className="modal-message">{message}</p>
